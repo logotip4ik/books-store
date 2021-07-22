@@ -5,7 +5,7 @@ export default function Navbar() {
   return (
     <header className={styles.header}>
       <Link href="/">
-        <a className={styles.header__title}>BookStore</a>
+        <a className={styles.header__title}>BookS</a>
       </Link>
       <Link href="/login">
         <a className={styles.header__login}>
