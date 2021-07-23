@@ -33,6 +33,23 @@
       width: 100%;
       display: block;
       margin: 0 0 0.5rem;
+
+      a {
+        text-decoration: none;
+        color: currentColor;
+        font-style: italic;
+        font-size: 1.05rem;
+        border-radius: 0.25rem;
+        border: 1px solid transparent;
+        padding: 0.25rem;
+        transition: border-color 0.3s ease;
+
+        &:hover,
+        &:focus {
+          transition: none;
+          border-color: #141f1a;
+        }
+      }
     }
   }
   &__actions {
@@ -53,7 +70,8 @@
       font-weight: 600;
       transition: color 300ms ease, background-color 300ms ease;
 
-      &:hover {
+      &:hover,
+      &:focus {
         color: white;
         background-color: var(--secondary-color);
         transition: none;

@@ -1,0 +1,109 @@
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { motion } from 'framer-motion';
+import Head from 'next/head';
+import Link from 'next/link';
+import Image from 'next/image';
+import styles from '../../../styles/Book.module.scss';
+import Layout from '../../../components/layouts/default';
+import { useCallback } from 'react';
+import { useRouter } from 'next/dist/client/router';
+
+export async function getServerSideProps({ params }) {
+  if (isNaN(params.id) || !params.id) return { notFound: true };
+  const client = new ApolloClient({
+    uri: 'http://localhost:4000/',
+    ssrMode: true,
+    cache: new InMemoryCache({ addTypename: false }),
+  });
+
+  const { data } = await client.query({
+    query: gql`
+      query Query {
+        getOneBook(id: ${params.id}) {
+          id
+          title
+          image
+          epilogue
+          author {
+            name
+            books {
+              id
+              title
+            }
+          }
+          createdAt
+        }
+      }
+    `,
+  });
+  return {
+    props: {
+      book: data.getOneBook,
+    },
+  };
+}
+
+export default function Book({ book }) {
+  const router = useRouter();
+
+  const openBook = useCallback(
+    (bookId) => {
+      router.push(`/book/${bookId}`);
+    },
+    [router],
+  );
+
+  return (
+    <>
+      <Head>
+        <title>{book.title}</title>
+        <meta
+          name="description"
+          content={`"${book.title}" - by ${book.author.name}`}
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <Layout>
+        <div className={styles.main}>
+          <Image
+            src={book.image}
+            width={520}
+            height={520}
+            alt={`Image for ${book.title}`}
+            className={styles.main__image}
+          />
+          <div className={styles.main__content}>
+            <h2 className={styles.main__content__title}>{book.title}</h2>
+            <p className={styles.main__content__desc}>{book.epilogue}</p>
+            <p className={styles.main__content__by}>
+              By - <span>{book.author.name}</span>
+            </p>
+            {/* TODO: create horizontal slider for other books of this author(if there are someones) */}
+            <div className={styles.main__content__actions}>
+              <Link href={`/book/${book.id}/read`}>
+                <a>Read</a>
+              </Link>
+              {/* TODO: Add button for read later(if has cookie -> link to dashboard else -> link to login or sign ip) */}
+            </div>
+          </div>
+        </div>
+        <div className={styles.slider__container}>
+          <h3 className={styles.slider__title}>
+            Another Books from {book.author.name}:
+          </h3>
+          <motion.ul className={styles.slider}>
+            {book.author.books.map((item) => (
+              <motion.li
+                key={item.id}
+                className={styles.slider__item}
+                onClick={() => openBook(item.id)}
+              >
+                {item.title}
+              </motion.li>
+            ))}
+          </motion.ul>
+        </div>
+      </Layout>
+    </>
+  );
+}

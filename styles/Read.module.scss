@@ -1,0 +1,31 @@
+.container {
+  width: 100%;
+  padding: 5vmin;
+  transition: background-color 0.3s ease;
+
+  * {
+    transition: color 0.3s ease;
+    font-family: system-ui, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--text-color-1);
+    background-color: rgb(32, 32, 43);
+  }
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 0;
+}
+.author {
+  text-align: center;
+  display: block;
+}
+.epilogue {
+  width: 80vw;
+  max-width: 700px;
+  min-width: 300px;
+  text-align: center;
+  margin: 1rem auto 2rem;
+}

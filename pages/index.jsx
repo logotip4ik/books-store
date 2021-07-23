@@ -1,13 +1,15 @@
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react';
+import ReactPaginate from 'react-paginate';
 import { BookCard } from '../components/BookCard';
-// import Image from 'next/image'
-// import styles from '../styles/Home.module.css';
 import Layout from '../components/layouts/default';
 
 export async function getServerSideProps({ query }) {
   // Yep, even if page is 0 we will set it for 1
-  const page = isNaN(query.page) || !query.page ? 1 : parseInt(query.page);
+  const page =
+    isNaN(query.page) || query.page == '0' ? 1 : parseInt(query.page);
   const { per_page } = process.env;
 
   const client = new ApolloClient({
@@ -26,6 +28,7 @@ export async function getServerSideProps({ query }) {
           title
           image
           author {
+            id
             name
           }
           createdAt
@@ -47,24 +50,48 @@ export async function getServerSideProps({ query }) {
     props: {
       books: data.getAllBooks,
       pages: Math.ceil(lastBook.getAllBooks[0].id / per_page),
+      currPage: page - 1,
     },
   };
 }
 
-export default function Home({ books, pages }) {
+export default function Home({ books, pages, currPage }) {
+  const router = useRouter();
+
+  const handleClick = useCallback(
+    (data) => {
+      let { selected } = data;
+      router.push(`/?page=${selected + 1}`);
+    },
+    [router],
+  );
+
   return (
-    <Layout>
+    <>
       <Head>
         <title>BookS</title>
         <meta name="description" content="Read your books even offline!" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="container">
-        {books.map((book) => (
-          <BookCard key={book.id} book={book}></BookCard>
-        ))}
-      </div>
-      {pages}
-    </Layout>
+      <Layout>
+        <div className="container">
+          {books.map((book) => (
+            <BookCard key={book.id} book={book}></BookCard>
+          ))}
+        </div>
+        <div className={'pagination-container'}>
+          <ReactPaginate
+            initialPage={currPage}
+            previousLabel={'←'}
+            nextLabel={'→'}
+            pageCount={pages}
+            marginPagesDisplayed={1}
+            pageRangeDisplayed={2}
+            onPageChange={(ev) => handleClick(ev)}
+            containerClassName={'pagination'}
+          />
+        </div>
+      </Layout>
+    </>
   );
 }
