@@ -2,6 +2,8 @@
   --hsl: 150;
   //             hsl(hue, saturation%, lightness%)
   --text-color-1: hsl(var(--hsl), 20%, 90%);
+  --text-color-2: hsl(var(--hsl), 20%, 15%);
+  --text-color-3: hsl(var(--hsl), 20%, 25%);
   --secondary-color: hsl(var(--hsl), 20%, 10%);
   --surface-color-2: hsl(var(--hsl), 5%, 98%);
 }

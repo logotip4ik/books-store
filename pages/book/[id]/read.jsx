@@ -1,26 +1,36 @@
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { gql } from '@apollo/client';
+import useApolloClient from '../../../hooks/useApolloClient';
+import Head from 'next/head';
 import styles from '../../../styles/Read.module.scss';
 
 function BookRead({ book }) {
   return (
-    <div className={styles.container}>
-      <h3 className={styles.title}>{book.title}</h3>
-      <small className={styles.author}>{book.author.name}</small>
-      <p className={styles.epilogue}>{book.epilogue}</p>
-      <p className={styles.text}>{book.content}</p>
-    </div>
+    <>
+      <Head>
+        <title>{'Read |' + book.title}</title>
+        <meta
+          name="description"
+          content={`"${book.title}" - by ${book.author.name}`}
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <div className={styles.container}>
+        <h3 className={styles.title}>{book.title}</h3>
+        <small className={styles.author}>{book.author.name}</small>
+        <p className={styles.epilogue}>{book.epilogue}</p>
+        <p className={styles.text}>{book.content}</p>
+      </div>
+    </>
   );
 }
 
 export default BookRead;
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, ...ctx }) {
   if (isNaN(params.id) || !params.id) return { notFound: true };
-  const client = new ApolloClient({
-    uri: 'http://localhost:4000/',
-    ssrMode: true,
-    cache: new InMemoryCache({ addTypename: false }),
-  });
+
+  // eslint-disable-next-line
+  const client = useApolloClient(ctx);
 
   const { data } = await client.query({
     query: gql`
@@ -30,7 +40,6 @@ export async function getServerSideProps({ params }) {
           title
           epilogue
           content
-          createdAt
           author {
             name
           }
@@ -38,6 +47,7 @@ export async function getServerSideProps({ params }) {
       }
     `,
   });
+
   return {
     props: {
       book: data.getOneBook,

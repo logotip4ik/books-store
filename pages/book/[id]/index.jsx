@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { motion } from 'framer-motion';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -7,14 +7,13 @@ import styles from '../../../styles/Book.module.scss';
 import Layout from '../../../components/layouts/default';
 import { useCallback } from 'react';
 import { useRouter } from 'next/dist/client/router';
+import useApolloClient from '../../../hooks/useApolloClient';
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, ...ctx }) {
   if (isNaN(params.id) || !params.id) return { notFound: true };
-  const client = new ApolloClient({
-    uri: 'http://localhost:4000/',
-    ssrMode: true,
-    cache: new InMemoryCache({ addTypename: false }),
-  });
+
+  // eslint-disable-next-line
+  const client = useApolloClient(ctx);
 
   const { data } = await client.query({
     query: gql`
@@ -78,11 +77,8 @@ export default function Book({ book }) {
             <p className={styles.main__content__by}>
               By - <span>{book.author.name}</span>
             </p>
-            {/* TODO: create horizontal slider for other books of this author(if there are someones) */}
             <div className={styles.main__content__actions}>
-              <Link href={`/book/${book.id}/read`}>
-                <a>Read</a>
-              </Link>
+              <Link href={`/book/${book.id}/read`}>Read</Link>
               {/* TODO: Add button for read later(if has cookie -> link to dashboard else -> link to login or sign ip) */}
             </div>
           </div>

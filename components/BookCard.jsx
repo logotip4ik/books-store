@@ -1,11 +1,23 @@
-import { motion } from 'framer-motion';
 import styles from '../styles/BookCard.module.scss';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useCallback } from 'react';
+import { useRouter } from 'next/router';
 
 export function BookCard({ book }) {
+  const router = useRouter();
+
+  const openBook = useCallback(
+    ({ target }) => {
+      const { nodeName } = target;
+      if (nodeName == 'IMG' || nodeName == 'DIV')
+        router.push(`/book/${book.id}`);
+    },
+    [book, router],
+  );
+
   return (
-    <article className={styles.article}>
+    <article className={styles.article} onClick={openBook}>
       <Image
         src={book.image}
         width="320"
@@ -20,14 +32,14 @@ export function BookCard({ book }) {
         <p className={styles.article__content__by}>
           By -{' '}
           <Link href={`/author/${book.author.id}`} passHref>
-            <a>{book.author.name}</a>
+            {book.author.name}
           </Link>
         </p>
       </div>
       <div className={styles.article__actions}>
         {/* TODO: Create a link to star this book */}
         <Link href={`/book/${book.id}/read`} scroll={false}>
-          <a>Read &rarr;</a>
+          Read &rarr;
         </Link>
       </div>
     </article>

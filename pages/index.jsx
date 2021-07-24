@@ -5,18 +5,16 @@ import { useCallback, useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { BookCard } from '../components/BookCard';
 import Layout from '../components/layouts/default';
+import useApolloClient from '../hooks/useApolloClient';
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ query, ...ctx }) {
   // Yep, even if page is 0 we will set it for 1
   const page =
     isNaN(query.page) || query.page == '0' ? 1 : parseInt(query.page);
   const { per_page } = process.env;
 
-  const client = new ApolloClient({
-    uri: 'http://localhost:4000/',
-    ssrMode: true,
-    cache: new InMemoryCache({ addTypename: false }),
-  });
+  // eslint-disable-next-line
+  const client = useApolloClient(ctx);
 
   const offset = (page - 1) * per_page;
 

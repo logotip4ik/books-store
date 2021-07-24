@@ -1,19 +1,15 @@
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
-import { motion } from 'framer-motion';
+import { gql } from '@apollo/client';
 import Head from 'next/head';
 import Link from 'next/link';
-import Image from 'next/image';
 import Layout from '../../components/layouts/default';
-import { useCallback } from 'react';
-import { useRouter } from 'next/dist/client/router';
+import styles from '../../styles/Author.module.scss';
+import useApolloClient from '../../hooks/useApolloClient';
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, ctx }) {
   if (isNaN(params.id) || !params.id) return { notFound: true };
-  const client = new ApolloClient({
-    uri: 'http://localhost:4000/',
-    ssrMode: true,
-    cache: new InMemoryCache({ addTypename: false }),
-  });
+
+  // eslint-disable-next-line
+  const client = useApolloClient(ctx);
 
   const { data } = await client.query({
     query: gql`
@@ -22,9 +18,11 @@ export async function getServerSideProps({ params }) {
           id
           name
           email
+          about
           books {
             id
             title
+            epilogue
           }
         }
       }
@@ -38,15 +36,6 @@ export async function getServerSideProps({ params }) {
 }
 
 export default function Author({ author }) {
-  const router = useRouter();
-
-  const openBook = useCallback(
-    (bookId) => {
-      router.push(`/book/${bookId}`);
-    },
-    [router],
-  );
-
   return (
     <>
       <Head>
@@ -55,7 +44,28 @@ export default function Author({ author }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <pre>{JSON.stringify(author, null, 2)}</pre>
+        <div className={styles.main}>
+          <h2 className={styles.main__title}>{author.name}</h2>
+          <p className={styles.main__about}>{author.about}</p>
+          <a className={styles.main__contact} href={`mailto: ${author.email}`}>
+            Contact {author.name}
+          </a>
+          <ol className={styles.main__books}>
+            {author.books.map((book) => (
+              <li key={book.id} className={styles.main__books__item}>
+                <div>
+                  <h3 className={styles.main__books__item__title}>
+                    {book.title}
+                  </h3>
+                  <small className={styles.main__books__item__epilogue}>
+                    {book.epilogue.split(' ').slice(0, 5).join(' ')}...
+                  </small>
+                </div>
+                <Link href={`/book/${book.id}`}>View</Link>
+              </li>
+            ))}
+          </ol>
+        </div>
       </Layout>
     </>
   );
