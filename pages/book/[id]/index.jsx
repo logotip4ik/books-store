@@ -24,6 +24,7 @@ export async function getServerSideProps({ params, ...ctx }) {
           image
           epilogue
           author {
+            id
             name
             books {
               id
@@ -75,7 +76,8 @@ export default function Book({ book }) {
             <h2 className={styles.main__content__title}>{book.title}</h2>
             <p className={styles.main__content__desc}>{book.epilogue}</p>
             <p className={styles.main__content__by}>
-              By - <span>{book.author.name}</span>
+              By -{' '}
+              <Link href={`/author/${book.author.id}`}>{book.author.name}</Link>
             </p>
             <div className={styles.main__content__actions}>
               <Link href={`/book/${book.id}/read`}>Read</Link>

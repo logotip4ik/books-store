@@ -39,10 +39,28 @@
       width: 100%;
       padding-left: 0.5rem;
       position: relative;
+
+      a {
+        text-decoration: none;
+        color: currentColor;
+        font-style: italic;
+        font-size: 1.05rem;
+        border-radius: 0.25rem;
+        border: 1px solid transparent;
+        padding: 0.25rem;
+        transition: border-color 0.3s ease;
+
+        &:hover,
+        &:focus {
+          transition: none;
+          border-color: #141f1a;
+        }
+      }
+
       &::after {
         content: '';
         position: absolute;
-        bottom: 0;
+        bottom: -0.5rem;
         left: 0;
         width: 100%;
         height: 1px;

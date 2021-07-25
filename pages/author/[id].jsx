@@ -5,7 +5,7 @@ import Layout from '../../components/layouts/default';
 import styles from '../../styles/Author.module.scss';
 import useApolloClient from '../../hooks/useApolloClient';
 
-export async function getServerSideProps({ params, ctx }) {
+export async function getServerSideProps({ params, ...ctx }) {
   if (isNaN(params.id) || !params.id) return { notFound: true };
 
   // eslint-disable-next-line

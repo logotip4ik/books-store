@@ -31,7 +31,7 @@ export function BookCard({ book }) {
         </Link>
         <p className={styles.article__content__by}>
           By -{' '}
-          <Link href={`/author/${book.author.id}`} passHref>
+          <Link href={`/author/${book.author.id}`} passHref scroll={false}>
             {book.author.name}
           </Link>
         </p>

@@ -14,6 +14,7 @@
   justify-content: space-between;
   align-items: baseline;
   z-index: 99;
+  overflow: hidden;
 
   &__title {
     margin: 0;
@@ -25,7 +26,7 @@
     letter-spacing: 1px;
   }
 
-  &__login {
+  &__action {
     $button-size: 3rem;
     inline-size: $button-size;
     block-size: $button-size;
@@ -36,7 +37,9 @@
 
     background-color: transparent;
     position: relative;
+    border: none;
     border-radius: 50%;
+    cursor: pointer;
 
     transition: background-color 0.3s ease;
 
