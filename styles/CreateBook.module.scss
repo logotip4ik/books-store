@@ -1,87 +1,19 @@
-.wrapper {
-  inline-size: 100%;
-  min-block-size: 90vh;
-  padding-block: 2rem;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .main {
-  flex-grow: 1;
-  border-radius: 0.25rem;
-  border: 1px solid var(--text-color-1);
-
-  max-width: 450px;
-  padding: 0.5rem 1rem;
-  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.011),
-    0 6.7px 5.3px rgba(0, 0, 0, 0.016), 0 12.5px 10px rgba(0, 0, 0, 0.02),
-    0 22.3px 17.9px rgba(0, 0, 0, 0.024), 0 41.8px 33.4px rgba(0, 0, 0, 0.029),
-    0 100px 80px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  padding: 0 5vmin;
 
   &__title {
     font-weight: 400;
-    text-align: center;
-  }
-
-  &__create {
-    padding-top: 0.5rem;
-    text-align: center;
-    font-size: 0.8rem;
-    * {
-      margin-block: 0;
-    }
-    a {
-      color: currentColor;
-      text-decoration: none;
-      position: relative;
-
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        background-color: var(--secondary-color);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      &:hover::after,
-      &:focus::after {
-        opacity: 1;
-        transition: none;
-      }
-    }
+    border-bottom: 1px solid var(--text-color-1);
   }
 
   &__form {
-    position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      height: 1px;
-      background-color: var(--text-color-1);
-    }
-
+    padding: 0.75rem;
     &__item {
-      &:first-child {
-        margin-bottom: 1rem;
-      }
-      label {
-        display: block;
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
-      }
+      margin-bottom: 1rem;
       input,
       textarea {
+        resize: vertical;
         border: none;
         border-bottom: 2px solid var(--text-color-1);
         border-radius: 0;
@@ -105,28 +37,18 @@
           border-bottom-color: black;
         }
       }
+      label {
+        display: block;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
       small {
-        color: #b60000;
+        color: rgb(201, 0, 0);
         font-size: 0.8rem;
       }
-
-      &--checkbox {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-bottom: 1rem;
-
-        label {
-          font-size: 1.1rem;
-        }
-      }
-    }
-    textarea {
-      resize: vertical;
     }
     &__actions {
-      width: 100%;
+      display: block;
       text-align: right;
 
       button {
@@ -142,6 +64,7 @@
         padding: 0.25rem 1rem;
         margin-block: 0;
         cursor: pointer;
+        margin: 0 0.25rem;
         box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.006),
           0 6.7px 5.3px rgba(0, 0, 0, 0.008), 0 12.5px 10px rgba(0, 0, 0, 0.01),
           0 22.3px 17.9px rgba(0, 0, 0, 0.012),
@@ -167,11 +90,13 @@
             color: var(--text-color-1);
           }
         }
-
-        &:first-of-type {
-          margin-right: 0.75rem;
-        }
       }
+    }
+  }
+
+  @media (max-width: 500px) {
+    *:not(input, textarea) {
+      text-align: center;
     }
   }
 }

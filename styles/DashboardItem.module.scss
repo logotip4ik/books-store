@@ -15,56 +15,46 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    // flex-grow: 1;
     max-width: 100%;
     width: 100%;
-  }
-  &__slider {
-    --size: 16ch;
-    --gap: 2rem;
+    border-bottom: 1px solid var(--text-color-1);
 
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: var(--size);
-    gap: calc(var(--gap) / 2);
-    padding-inline: var(--gap);
-    padding-block-end: calc(var(--gap) * 2);
+    h2 {
+      font-weight: 400;
+    }
 
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    scroll-padding-inline-start: var(--gap);
-    width: 100%;
-
-    &__item {
-      scroll-snap-align: start;
-
-      display: grid;
-      place-items: center;
-      gap: inherit;
-      margin: 0;
-
-      text-align: center;
-      border-radius: 0.25rem;
-      position: relative;
-      user-select: none;
-      padding: 0.5rem;
+    button {
+      $size: 2.5rem;
+      inline-size: $size;
+      block-size: $size;
+      border: none;
+      outline: none;
+      border-radius: 50%;
+      background-color: transparent;
       cursor: pointer;
-      box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.006),
-        0 6.7px 5.3px rgba(0, 0, 0, 0.008), 0 12.5px 10px rgba(0, 0, 0, 0.01),
-        0 22.3px 17.9px rgba(0, 0, 0, 0.012),
-        0 41.8px 33.4px rgba(0, 0, 0, 0.014), 0 100px 80px rgba(0, 0, 0, 0.02);
 
-      &:last-child::after {
-        content: '';
-        position: absolute;
-        width: var(--gap);
-        height: 100%;
-        right: calc(var(--gap) * -1);
-        inline-size: var(--gap);
-        block-size: 100%;
-        inset-block-start: 0;
-        inset-end: calc(var(--gap) * -1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      transition: background-color 0.3s ease;
+
+      & > svg {
+        width: 75%;
+        height: auto;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+      }
+
+      &:hover,
+      &:focus {
+        background-color: hsl(0, 0%, 50%, 0.2);
+        transition: none;
+
+        svg {
+          transition: none;
+          opacity: 1;
+        }
       }
     }
   }

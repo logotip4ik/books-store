@@ -15,6 +15,7 @@ export default function Navbar() {
 
   const [isReadRoute, setIsReadRoute] = useState(false);
   const [isLoginRoute, setIsLoginRoute] = useState(false);
+  const [isSignUpRoute, setIsSignUpRoute] = useState(false);
   const [isDashboardRoute, setIsDashboardRoute] = useState(false);
 
   const handleLogout = useCallback(() => {
@@ -25,6 +26,7 @@ export default function Navbar() {
   useEffect(() => {
     setIsReadRoute(router.route.split('/').includes('read'));
     setIsLoginRoute(router.route.split('/').includes('login'));
+    setIsSignUpRoute(router.route.split('/').includes('sign-up'));
     setIsDashboardRoute(router.route.split('/').includes('dashboard'));
   }, [router.route]);
 
@@ -63,7 +65,7 @@ export default function Navbar() {
                   <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
                 </svg>
               </motion.button>
-            ) : isLoginRoute ? (
+            ) : isLoginRoute || isSignUpRoute ? (
               <motion.b
                 key={2}
                 variants={variants}
@@ -72,7 +74,7 @@ export default function Navbar() {
                 exit={'exit'}
               ></motion.b>
             ) : (
-              <Link href="/login" passHref>
+              <Link href="/login" passHref prefetch={true}>
                 <motion.a
                   key={3}
                   className={styles.header__action}

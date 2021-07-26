@@ -1,27 +1,30 @@
 import styles from '../styles/DashboardItem.module.scss';
 
-function DashboardItem({ list, header, empty, openBook }) {
+function DashboardItem({ list, header, empty, onOpen, onAdd }) {
   return (
     <div className={styles.main}>
       <div className={styles.main__header}>
         <h2>{header}</h2>
-        {/* TODO: add plus svg and replace this with button*/}
-        <span>+</span>
+        <button onClick={onAdd}>
+          <svg viewBox="0 0 24 24">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+          </svg>
+        </button>
       </div>
       {list.length !== 0 ? (
-        <ul className={styles.main__slider}>
+        <ul className="slider">
           {list.map((item) => (
             <li
               key={item.id}
-              className={styles.main__slider__item}
-              onClick={() => openBook(item.id)}
+              className="slider__item"
+              onClick={() => onOpen(item.id)}
             >
               {item.title}
             </li>
           ))}
         </ul>
       ) : (
-        <p className={styles.main__slider__empty}>{empty}</p>
+        <p className="slider--empty">{empty}</p>
       )}
     </div>
   );
