@@ -6,7 +6,10 @@ function useApolloClient(ctx) {
   const { _books__auth: token } = cookies(ctx);
 
   const httpLink = createHttpLink({
-    uri: 'http://localhost:4000/',
+    uri:
+      process.env.NODE_ENV === 'production'
+        ? 'https://books-servver.herokuapp.com/'
+        : 'http://localhost:4000/',
   });
   const authLink = setContext((_, { headers }) => {
     return {
