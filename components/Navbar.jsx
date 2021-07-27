@@ -13,10 +13,7 @@ const variants = {
 export default function Navbar() {
   const router = useRouter();
 
-  const [isReadRoute, setIsReadRoute] = useState(false);
-  const [isLoginRoute, setIsLoginRoute] = useState(false);
-  const [isSignUpRoute, setIsSignUpRoute] = useState(false);
-  const [isDashboardRoute, setIsDashboardRoute] = useState(false);
+  const [routeName, setRouteName] = useState('');
 
   const handleLogout = useCallback(() => {
     Cookies.expire('_books__auth');
@@ -24,15 +21,13 @@ export default function Navbar() {
   }, [router]);
 
   useEffect(() => {
-    setIsReadRoute(router.route.split('/').includes('read'));
-    setIsLoginRoute(router.route.split('/').includes('login'));
-    setIsSignUpRoute(router.route.split('/').includes('sign-up'));
-    setIsDashboardRoute(router.route.split('/').includes('dashboard'));
+    const route = router.route.split('/');
+    setRouteName(route[route.length - 1]);
   }, [router.route]);
 
   return (
     <AnimatePresence exitBeforeEnter>
-      {!isReadRoute && (
+      {routeName !== 'read' && (
         <motion.header
           className={styles.header}
           initial={{ y: -100, opacity: 0, height: 'initial' }}
@@ -40,18 +35,35 @@ export default function Navbar() {
           exit={{ height: 0, y: -80 }}
           transition={{ ease: 'easeOut' }}
         >
-          <Link href="/" passHref>
-            <motion.a
-              className={styles.header__title}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              BookS
-            </motion.a>
-          </Link>
+          <div>
+            <AnimatePresence>
+              {(routeName === 'create' || routeName === 'edit') && (
+                <motion.button
+                  className={styles.header__back}
+                  initial={{ width: 0 }}
+                  animate={{ width: 32 }}
+                  exit={{ width: 0 }}
+                  onClick={router.back}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M16.88,2.88L16.88,2.88c-0.49-0.49-1.28-0.49-1.77,0l-8.41,8.41c-0.39,0.39-0.39,1.02,0,1.41l8.41,8.41 c0.49,0.49,1.28,0.49,1.77,0l0,0c0.49-0.49,0.49-1.28,0-1.77L9.54,12l7.35-7.35C17.37,4.16,17.37,3.37,16.88,2.88z" />
+                  </svg>
+                </motion.button>
+              )}
+            </AnimatePresence>
+            <Link href="/" passHref>
+              <motion.a
+                className={styles.header__title}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                BookS
+              </motion.a>
+            </Link>
+          </div>
           <AnimatePresence exitBeforeEnter>
-            {isDashboardRoute ? (
+            {routeName === 'dashboard' ? (
               <motion.button
                 key={1}
                 variants={variants}
@@ -65,7 +77,7 @@ export default function Navbar() {
                   <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
                 </svg>
               </motion.button>
-            ) : isLoginRoute || isSignUpRoute ? (
+            ) : routeName === 'login' || routeName === 'sign-up' ? (
               <motion.b
                 key={2}
                 variants={variants}

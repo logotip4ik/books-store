@@ -2,7 +2,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import cookies from 'next-cookies';
-import { motion } from 'framer-motion';
 import { gql, useMutation } from '@apollo/client';
 import { useRouter } from 'next/dist/client/router';
 import styles from '../../../styles/Book.module.scss';
@@ -92,6 +91,7 @@ export default function Book({ book, me, isStarred }) {
   const router = useRouter();
 
   const [starred, setStarred] = useState(isStarred);
+  const [otherBooks, setOtherBooks] = useState([]);
 
   const [starBook] = useMutation(STAR_BOOK);
   const [unStarBook] = useMutation(UN_STAR_BOOK);
@@ -104,11 +104,13 @@ export default function Book({ book, me, isStarred }) {
   }, [book, starred, starBook, unStarBook]);
 
   const openBook = useCallback(
-    (bookId) => {
-      router.push(`/book/${bookId}`);
-    },
+    (bookId) => router.push(`/book/${bookId}`),
     [router],
   );
+
+  useEffect(() => {
+    setOtherBooks(book.author.books.filter(({ id }) => id !== book.id));
+  }, []);
 
   return (
     <>
@@ -164,25 +166,30 @@ export default function Book({ book, me, isStarred }) {
                 </Link>
               )}
               <Link href={`/book/${book.id}/read`}>Read</Link>
-              {/* TODO: Add button for read later(if has cookie -> link to dashboard else -> link to login or sign ip) */}
             </div>
           </div>
         </div>
         <div className={styles.slider__container}>
           <h3 className={styles.slider__title}>
-            Another Books from {book.author.name}:
+            {otherBooks.length !== 0
+              ? `Another Books from ${book.author.name}:`
+              : `"${book.author.name}" does not have other books`}
           </h3>
-          <motion.ul className="slider">
-            {book.author.books.map((item) => (
-              <motion.li
-                key={item.id}
-                className="slider__item"
-                onClick={() => openBook(item.id)}
-              >
-                {item.title}
-              </motion.li>
-            ))}
-          </motion.ul>
+          {otherBooks.length !== 0 && (
+            <ul className="slider">
+              {book.author.books
+                .filter(({ id }) => id !== book.id)
+                .map((item) => (
+                  <li
+                    key={item.id}
+                    className="slider__item"
+                    onClick={() => openBook(item.id)}
+                  >
+                    {item.title}
+                  </li>
+                ))}
+            </ul>
+          )}
         </div>
       </Layout>
     </>

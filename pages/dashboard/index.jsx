@@ -12,7 +12,7 @@ function Dashboard({ user }) {
   const router = useRouter();
 
   const openWrittenBook = useCallback(
-    (bookId) => router.push(`/book/${bookId}`),
+    (bookId) => router.push(`/dashboard/book/edit/?id=${bookId}`),
     [router],
   );
   const openStarredBook = useCallback(

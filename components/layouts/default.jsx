@@ -12,7 +12,14 @@ export default function Layout({ children }) {
       animate={'enter'}
       exit={'exit'}
       variants={variants}
-      style={{ paddingTop: '1rem' }}
+      style={{
+        paddingTop: '1rem',
+        minHeight: '85vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+      }}
     >
       {children}
     </motion.main>

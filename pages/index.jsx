@@ -72,7 +72,7 @@ export default function Home({ books, pages, currPage }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <div className="container">
+        <div className="container container--full-height">
           {books.map((book) => (
             <BookCard key={book.id} book={book}></BookCard>
           ))}

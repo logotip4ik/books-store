@@ -3,52 +3,82 @@ import Head from 'next/head';
 import NProgress from 'nprogress';
 import cookies from 'next-cookies';
 import { useFormik } from 'formik';
-import { gql } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import Layout from '../../../components/layouts/default';
 import styles from '../../../styles/CreateBook.module.scss';
 import useApolloClient from '../../../hooks/useApolloClient';
-import { useCallback } from 'react';
 
 const errorTextVariants = {
   exit: { opacity: 0 },
   animate: { opacity: 1 },
 };
 
-function Create() {
+const CREATE_BOOK = gql`
+  mutation Mutation(
+    $title: String!
+    $content: String!
+    $epilogue: String!
+    $image: String!
+    $author: Int!
+  ) {
+    createBook(
+      data: {
+        title: $title
+        content: $content
+        epilogue: $epilogue
+        image: $image
+        author: $author
+      }
+    ) {
+      id
+      title
+      epilogue
+      author {
+        id
+        name
+      }
+      image
+      createdAt
+    }
+  }
+`;
+
+function Create({ user }) {
+  const [createBook, { data: BookData }] = useMutation(CREATE_BOOK);
+
   const formik = useFormik({
     initialValues: {
-      name: '',
+      title: '',
       epilogue: '',
       content: '',
+      image: '',
     },
     validationSchema: Yup.object({
-      name: Yup.string()
+      title: Yup.string()
         .min(1, 'Must be at least 2 characters')
         .max(100, 'Must be 100 characters or less')
         .required('Required'),
       epilogue: Yup.string()
         .min(1, 'Must be at least 2 characters')
-        .max(500, 'Must be 500 characters or less')
+        .max(1000, 'Must be 1000 characters or less')
         .required('Required'),
       content: Yup.string()
         .min(1, 'Must be at least 2 characters')
         .required('Required'),
+      image: Yup.string().url('Must be url type').required('Required'),
     }),
 
     onSubmit: (values) => {
-      // TODO: Handle submit, by mutating the graphql
-      formik.resetForm();
       NProgress.start();
-      NProgress.inc();
-      NProgress.done();
+      createBook({ variables: { ...values, author: user.id } }).finally(
+        (val) => {
+          NProgress.done();
+          console.log(val);
+        },
+      );
     },
   });
-
-  const resize = useCallback(({ target }) => {
-    target.style.height = 'auto';
-    target.style.height = target.scrollHeight + 2 + 'px';
-  }, []);
 
   return (
     <>
@@ -66,10 +96,15 @@ function Create() {
             onReset={formik.handleReset}
           >
             <div className={styles.main__form__item}>
-              <label htmlFor="name">Name</label>
-              <input id="name" type="text" {...formik.getFieldProps('name')} />
+              <label htmlFor="title">Title</label>
+              <input
+                id="title"
+                type="text"
+                autoComplete="off"
+                {...formik.getFieldProps('title')}
+              />
               <AnimatePresence exitBeforeEnter>
-                {formik.touched.name && formik.errors.name ? (
+                {formik.touched.title && formik.errors.title ? (
                   <motion.small
                     key={1}
                     variants={errorTextVariants}
@@ -77,7 +112,7 @@ function Create() {
                     animate={'animate'}
                     exit={'exit'}
                   >
-                    {formik.errors.name}
+                    {formik.errors.title}
                   </motion.small>
                 ) : (
                   <motion.b
@@ -93,12 +128,44 @@ function Create() {
               </AnimatePresence>
             </div>
             <div className={styles.main__form__item}>
-              <label htmlFor="epilogue">Email Address</label>
+              <label htmlFor="image">Image</label>
+              <input
+                id="image"
+                autoComplete="off"
+                type="url"
+                {...formik.getFieldProps('image')}
+              />
+              <AnimatePresence exitBeforeEnter>
+                {formik.touched.image && formik.errors.image ? (
+                  <motion.small
+                    key={1}
+                    variants={errorTextVariants}
+                    initial={'exit'}
+                    animate={'animate'}
+                    exit={'exit'}
+                  >
+                    {formik.errors.image}
+                  </motion.small>
+                ) : (
+                  <motion.b
+                    key={2}
+                    variants={errorTextVariants}
+                    initial={'exit'}
+                    animate={'animate'}
+                    exit={'exit'}
+                  >
+                    &nbsp;
+                  </motion.b>
+                )}
+              </AnimatePresence>
+            </div>
+            <div className={styles.main__form__item}>
+              <label htmlFor="epilogue">Epilogue</label>
               <textarea
                 id="epilogue"
                 rows="4"
+                autoComplete="off"
                 type="text"
-                onKeyPress={resize}
                 {...formik.getFieldProps('epilogue')}
               />
               <AnimatePresence exitBeforeEnter>
@@ -130,8 +197,8 @@ function Create() {
               <textarea
                 id="content"
                 rows="10"
+                autoComplete="off"
                 type="text"
-                onKeyPress={resize}
                 {...formik.getFieldProps('content')}
               />
               <AnimatePresence exitBeforeEnter>

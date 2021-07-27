@@ -12,6 +12,9 @@
   box-sizing: border-box;
   line-height: 1.75;
 }
+#__next {
+  min-block-size: 100vh;
+}
 html {
   block-size: 100%;
   inline-size: 100%;
@@ -40,6 +43,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: auto;
   width: 100%;
 }
 
